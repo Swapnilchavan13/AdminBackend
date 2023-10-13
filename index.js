@@ -8,6 +8,7 @@ const port = 3005;
 
 const Theatredata = require('./models/theatredata')
 const Moviedata = require('./models/moviedata')
+const Allocatedata = require('./models/allocatedata')
 
 // MongoDB Connection
 mongoose.set('strictQuery', false);
@@ -118,7 +119,39 @@ app.delete('/moviedata/:id', async (req, res) => {
     }
   });
   
+  ///////////For Allote Data//////////////
   
+// Handle POST request to Allote data
+app.post('/allocatedata', async (req, res) => {
+    const { date, movies, theatreName } = req.body;
+  
+    try {
+      const newData = new Allocatedata({
+        date,
+        movies,
+        theatreName
+      });
+  
+      await newData.save();
+      console.log('Data saved successfully.');
+      res.status(200).json({ message: 'Data saved successfully.' });
+    } catch (err) {
+      console.error('Error saving data:', err);
+      res.status(500).json({ error: 'An error occurred while saving the data.' });
+    }
+  });
+
+
+  // Handle GET request to retrieve data
+app.get('/allocatedata', async (req, res) => {
+    try {
+      const data = await Allocatedata.find();
+      res.status(200).json(data);
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      res.status(500).json({ error: 'An error occurred while fetching the data.' });
+    }
+  });
 
 
   
