@@ -153,6 +153,33 @@ app.get('/allocatedata', async (req, res) => {
     }
   });
 
+// Handle PUT request to update allocated data
+app.put('/allocatedata/:date', async (req, res) => {
+  const date = req.params.date;
+  const { movieData, theatreName } = req.body;
+
+  try {
+    const existingData = await Allocatedata.findOne({ date });
+
+    if (!existingData) {
+      return res.status(404).json({ error: 'Data not found.' });
+    }
+
+    existingData.movieData = movieData;
+    existingData.theatreName = theatreName;
+
+    await existingData.save();
+
+    console.log('Data updated successfully.');
+    res.status(200).json({ message: 'Data updated successfully.' });
+  } catch (err) {
+    console.error('Error updating data:', err);
+    res.status(500).json({ error: 'An error occurred while updating the data.' });
+  }
+});
+
+  
+
 
   
 // Start the Server
