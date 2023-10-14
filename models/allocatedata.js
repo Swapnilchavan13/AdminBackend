@@ -1,19 +1,18 @@
 const mongoose = require('mongoose');
 
-const showtimeSchema = new mongoose.Schema({
-  time: String,
-  available: Boolean,
-});
-
-const movieSchema = new mongoose.Schema({
-  name: String,
-  showTimes: [showtimeSchema],
-});
-
 const allocateDataSchema = new mongoose.Schema({
-  date: String,
-  movieData: [movieSchema],
-  theatreName: String,
+  date: {
+    type: String,
+    required: true
+  },
+  theatreName: {
+    type: String,
+    required: true
+  },
+  movieData: {
+    type: Object,
+    required: true
+  }
 });
 
 const Allocatedata = mongoose.model('Allocatedata', allocateDataSchema);
