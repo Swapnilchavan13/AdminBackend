@@ -147,7 +147,6 @@ app.post('/allocatedata', async (req, res) => {
   }
 });
 
-
   // Handle GET request to retrieve data
 app.get('/allocatedata', async (req, res) => {
     try {
