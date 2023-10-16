@@ -141,12 +141,11 @@ app.post('/allocatedata', async (req, res) => {
       console.error('Duplicate data:', err);
       res.status(400).json({ error: 'Data already exists.' });
     } else {
-      console.error('Error saving data:', err);
+      console.error('Data already exists:', err);
       res.status(500).json({ error: 'An error occurred while saving the data.' });
     }
   }
 });
-
 
 
   // Handle GET request to retrieve data
