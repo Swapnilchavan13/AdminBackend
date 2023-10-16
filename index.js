@@ -123,23 +123,30 @@ app.delete('/moviedata/:id', async (req, res) => {
   
 // Handle POST request to Allote data
 app.post('/allocatedata', async (req, res) => {
-    const { date, movieData, theatreName } = req.body;
-  
-    try {
-      const newData = new Allocatedata({
-        date,
-        movieData,
-        theatreName
-      });
-  
-      await newData.save();
-      console.log('Data saved successfully.');
-      res.status(200).json({ message: 'Data saved successfully.' });
-    } catch (err) {
+  const { date, movieData, theatreName } = req.body;
+
+  try {
+    const newData = new Allocatedata({
+      date,
+      movieData,
+      theatreName
+    });
+
+    await newData.save();
+    console.log('Data saved successfully.');
+    res.status(200).json({ message: 'Data saved successfully.' });
+  } catch (err) {
+    if (err.name === 'MongoError' && err.code === 11000) {
+      // Duplicate key error, handle accordingly
+      console.error('Duplicate data:', err);
+      res.status(400).json({ error: 'Data already exists.' });
+    } else {
       console.error('Error saving data:', err);
       res.status(500).json({ error: 'An error occurred while saving the data.' });
     }
-  });
+  }
+});
+
 
 
   // Handle GET request to retrieve data
@@ -177,10 +184,6 @@ app.put('/allocatedata/:date', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while updating the data.' });
   }
 });
-
-  
-
-
   
 // Start the Server
 connectDB().then(() => {

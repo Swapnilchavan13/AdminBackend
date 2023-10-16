@@ -15,6 +15,9 @@ const allocateDataSchema = new mongoose.Schema({
   }
 });
 
+// Add unique index to prevent duplicates
+allocateDataSchema.index({ date: 1, theatreName: 1 }, { unique: true });
+
 const Allocatedata = mongoose.model('Allocatedata', allocateDataSchema);
 
 module.exports = Allocatedata;
