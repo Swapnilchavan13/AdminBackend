@@ -9,6 +9,7 @@ const port = 3005;
 const Theatredata = require('./models/theatredata')
 const Moviedata = require('./models/moviedata')
 const Allocatedata = require('./models/allocatedata')
+const Bookingdata = require('./models/bookingdata')
 
 // MongoDB Connection
 mongoose.set('strictQuery', false);
@@ -58,7 +59,6 @@ app.post('/theatredata', async (req, res) => {
       res.status(500).json({ error: 'An error occurred while saving the data.' });
     }
   });
-
 // Handle GET request to retrieve data
 app.get('/theatredata', async (req, res) => {
     try {
@@ -66,6 +66,7 @@ app.get('/theatredata', async (req, res) => {
       res.status(200).json(data);
     } catch (err) {
       console.error('Error fetching data:', err);
+
       res.status(500).json({ error: 'An error occurred while fetching the data.' });
     }
   });
@@ -179,6 +180,32 @@ app.put('/allocatedata/:date', async (req, res) => {
   } catch (err) {
     console.error('Error updating data:', err);
     res.status(500).json({ error: 'An error occurred while updating the data.' });
+  }
+});
+
+// Define a POST route to store the booking data
+app.post('/bookingdata', async (req, res) => {
+  try {
+    // Create a new Cinema document using the data from the request
+    const bookingData = req.body;
+    const booking = new Bookingdata(bookingData);
+    
+    // Save the document to the database
+    await booking.save();
+
+    res.status(201).json({ message: 'Data stored successfully.' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error storing data in the database.' });
+  }
+});
+
+// Define a GET route to retrieve booking data
+app.get('/bookingdata', async (req, res) => {
+  try {
+    const bookingData = await Bookingdata.find(); // Retrieve all booking data from the database
+    res.status(200).json(bookingData);
+  } catch (error) {
+    res.status(500).json({ error: 'Error retrieving data from the database.' });
   }
 });
   
