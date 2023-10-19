@@ -1,4 +1,5 @@
 const express = require('express');
+const Allocatedata = require('./models/allocatedata')
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const mongoose = require('mongoose');
@@ -8,7 +9,6 @@ const port = 3005;
 
 const Theatredata = require('./models/theatredata')
 const Moviedata = require('./models/moviedata')
-const Allocatedata = require('./models/allocatedata')
 const Bookingdata = require('./models/bookingdata')
 
 // MongoDB Connection
@@ -157,40 +157,27 @@ app.get('/allocatedata', async (req, res) => {
       res.status(500).json({ error: 'An error occurred while fetching the data.' });
     }
   });
-
-// Handle PUT request to update allocated data
-app.put('/allocatedata/:date', async (req, res) => {
-  const date = req.params.date;
-  const { movieData, theatreName } = req.body;
-
-  try {
-    const existingData = await Allocatedata.findOne({ date });
-
-    if (!existingData) {
-      return res.status(404).json({ error: 'Data not found.' });
-    }
-
-    existingData.movieData = movieData;
-    existingData.theatreName = theatreName;
-
-    await existingData.save();
-
-    console.log('Data updated successfully.');
-    res.status(200).json({ message: 'Data updated successfully.' });
-  } catch (err) {
-    console.error('Error updating data:', err);
-    res.status(500).json({ error: 'An error occurred while updating the data.' });
-  }
-});
+  
 
 // Define a POST route to store the booking data
 app.post('/bookingdata', async (req, res) => {
   try {
-    // Create a new Cinema document using the data from the request
     const bookingData = req.body;
+    const { mname, sdate, showtime, seats } = bookingData;
+
+    // Check if the seats are already booked for the given movie, date, and showtime
+    const existingBooking = await Bookingdata.findOne({
+      mname,
+      sdate,
+      showtime,
+      seats: { $in: seats },
+    });
+
+    if (existingBooking) {
+      return res.status(400).json({ error: 'Seats are already booked for this show.' });
+    }
+
     const booking = new Bookingdata(bookingData);
-    
-    // Save the document to the database
     await booking.save();
 
     res.status(201).json({ message: 'Data stored successfully.' });
