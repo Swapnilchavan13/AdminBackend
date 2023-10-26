@@ -89,6 +89,7 @@ app.post('/moviedata', async (req, res) => {
       res.status(200).json({ message: 'Movie Data saved successfully.' });
     } catch (err) {
       console.log('Error saving data:', err);
+      const data = await Moviedata.find();
       res.status(500).json({ error: 'An error occurred while saving the data.' });
     }
   });
@@ -96,7 +97,6 @@ app.post('/moviedata', async (req, res) => {
 // Handle GET request to retrieve data
 app.get('/moviedata', async (req, res) => {
     try {
-      const data = await Moviedata.find();
       res.status(200).json(data);
     } catch (err) {
       console.error('Error fetching data:', err);
@@ -158,6 +158,25 @@ app.get('/allocatedata', async (req, res) => {
     }
   });
   
+  // Handle DELETE request to delete data by _id
+app.delete('/allocatedata/:id', async (req, res) => {
+  const dataId = req.params.id;
+
+  try {
+    const deletedData = await Allocatedata.findByIdAndRemove(dataId);
+
+    if (!deletedData) {
+      // Data with the given _id was not found
+      res.status(404).json({ error: 'Data not found.' });
+    } else {
+      res.status(200).json({ message: 'Data deleted successfully.' });
+    }
+  } catch (err) {
+    console.error('Error deleting data:', err);
+    res.status(500).json({ error: 'An error occurred while deleting the data.' });
+  }
+});
+
 
 // Define a POST route to store the booking data
 app.post('/bookingdata', async (req, res) => {
