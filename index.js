@@ -89,14 +89,14 @@ app.post('/moviedata', async (req, res) => {
       res.status(200).json({ message: 'Movie Data saved successfully.' });
     } catch (err) {
       console.log('Error saving data:', err);
-      const data = await Moviedata.find();
       res.status(500).json({ error: 'An error occurred while saving the data.' });
     }
   });
-
-// Handle GET request to retrieve data
-app.get('/moviedata', async (req, res) => {
+  
+  // Handle GET request to retrieve data
+  app.get('/moviedata', async (req, res) => {
     try {
+      const data = await Moviedata.find();
       res.status(200).json(data);
     } catch (err) {
       console.error('Error fetching data:', err);
