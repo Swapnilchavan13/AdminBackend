@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
+  customerMobile: String,
+  customerName: String,
+  gender: String,
+  paymentMethod: String,
     tname: String,
     mname: String,
     sdate: String,
