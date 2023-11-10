@@ -124,10 +124,11 @@ app.delete('/moviedata/:id', async (req, res) => {
   
 // Handle POST request to Allote data
 app.post('/allocatedata', async (req, res) => {
-  const { date, movieData, theatreName } = req.body;
+  const { admin, date, movieData, theatreName } = req.body;
 
   try {
     const newData = new Allocatedata({
+      admin,
       date,
       movieData,
       theatreName

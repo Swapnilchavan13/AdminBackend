@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
 const allocateDataSchema = new mongoose.Schema({
+  admin: {
+    type: String
+  },
   date: {
     type: String,
     required: true
