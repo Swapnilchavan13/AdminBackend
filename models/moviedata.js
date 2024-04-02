@@ -1,9 +1,17 @@
 const mongoose = require('mongoose');
 
 const dataSchema = new mongoose.Schema({
-  moviename: String,
-  poster: String,
-  description: String,
+  movieName: String,
+  movieDesc: String,
+  movieRuntime: String,
+  intervalTime: String,
+  productionHouse: String,
+  dateTime: Date,
+  startDate: Date,
+  endDate: Date,
+  posterImage: String,
+  isDeleted: { type: Boolean, default: false },
+  isExpired: { type: Boolean, default: false }
 });
 
 const Moviedata = mongoose.model('Moviedata', dataSchema);

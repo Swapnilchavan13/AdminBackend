@@ -6,10 +6,16 @@ const rowSchema = new mongoose.Schema({
 });
 
 const dataSchema = new mongoose.Schema({
-  location: String,
-  loginid: String,
-  name: String,
-  password: String,
+  theatreName: String,
+  theatreLocation: String,
+  theatreCity: String,
+  theatrePinCode: String,
+  theatreOperatorEmail: String,
+  theatreOperatorContact: String,
+  theatreOperatorName: String,
+  theatreOperatorIDproof: String,
+  theaterScreens: Number,
+  isDeleted: { type: Boolean, default: false }, // assuming it's a boolean field
   rows: [rowSchema],
 });
 

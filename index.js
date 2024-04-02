@@ -40,25 +40,31 @@ app.get('/', (req, res) => {
 
 // Handle POST request to save data
 app.post('/theatredata', async (req, res) => {
-    const { location, loginid, name, password, rows } = req.body;
-  
-    try {
-      const newData = new Theatredata({
-        location,
-        loginid,
-        name,
-        password,
-        rows,
-      });
-  
-      await newData.save();
-      console.log('Data saved successfully.');
-      res.status(200).json({ message: 'Data saved successfully.' });
-    } catch (err) {
-      console.error('Error saving data:', err);
-      res.status(500).json({ error: 'An error occurred while saving the data.' });
-    }
-  });
+  const { theatreName, theatreLocation, theatreCity, theatrePinCode, theatreOperatorEmail, theatreOperatorContact, theatreOperatorName, theatreOperatorIDproof, theaterScreens, rows } = req.body;
+
+  try {
+    const newData = new Theatredata({
+    
+      theatreName,
+      theatreLocation,
+      theatreCity,
+      theatrePinCode,
+      theatreOperatorEmail,
+      theatreOperatorContact,
+      theatreOperatorName,
+      theatreOperatorIDproof,
+      theaterScreens,
+      rows,
+    });
+
+    await newData.save();
+    console.log('Data saved successfully.');
+    res.status(200).json({ message: 'Data saved successfully.' });
+  } catch (err) {
+    console.error('Error saving data:', err);
+    res.status(500).json({ error: 'An error occurred while saving the data.' });
+  }
+});
 // Handle GET request to retrieve data
 app.get('/theatredata', async (req, res) => {
     try {
@@ -73,25 +79,34 @@ app.get('/theatredata', async (req, res) => {
 
   ///////For Movie ////////
 
-  // Handle POST request to save data
+ // Handle POST request to save data
 app.post('/moviedata', async (req, res) => {
-    const { moviename, poster, description } = req.body;
-  
-    try {
-      const newData = new Moviedata({
-        moviename,
-        poster,
-        description
-      });
-  
-      await newData.save();
-      console.log('Movie Data saved successfully.');
-      res.status(200).json({ message: 'Movie Data saved successfully.' });
-    } catch (err) {
-      console.log('Error saving data:', err);
-      res.status(500).json({ error: 'An error occurred while saving the data.' });
-    }
-  });
+  const { movieName, posterImage, movieDesc, movieRuntime, intervalTime, productionHouse, dateTime, startDate, endDate, isDeleted, isExpired } = req.body;
+
+  try {
+    const newData = new Moviedata({
+      movieName,
+      posterImage,
+      movieDesc,
+      movieRuntime,
+      intervalTime,
+      productionHouse,
+      dateTime,
+      startDate,
+      endDate,
+      isDeleted,
+      isExpired
+    });
+
+    await newData.save();
+    console.log('Movie Data saved successfully.');
+    res.status(200).json({ message: 'Movie Data saved successfully.' });
+  } catch (err) {
+    console.log('Error saving data:', err);
+    res.status(500).json({ error: 'An error occurred while saving the data.' });
+  }
+});
+
   
   // Handle GET request to retrieve data
   app.get('/moviedata', async (req, res) => {
@@ -124,14 +139,15 @@ app.delete('/moviedata/:id', async (req, res) => {
   
 // Handle POST request to Allote data
 app.post('/allocatedata', async (req, res) => {
-  const { admin, date, movieData, theatreName } = req.body;
+  const { admin, date, movieData, selectedscreen, theatreId } = req.body;
 
   try {
     const newData = new Allocatedata({
       admin,
       date,
       movieData,
-      theatreName
+      selectedscreen,
+      theatreId
     });
 
     await newData.save();
