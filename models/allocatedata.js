@@ -14,6 +14,11 @@ const allocateDataSchema = new mongoose.Schema({
     required: true
   },
 
+  theatreName: {
+    type: String,
+    required: true
+  },
+
   selectedscreen: {
     type: String,
     required: true

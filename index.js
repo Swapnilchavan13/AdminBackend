@@ -137,33 +137,41 @@ app.delete('/moviedata/:id', async (req, res) => {
   
   ///////////For Allote Data//////////////
   
-// Handle POST request to Allote data
+// Handle POST request to Allocate data
 app.post('/allocatedata', async (req, res) => {
-  const { admin, date, movieData, selectedscreen, theatreId } = req.body;
+  const { admin, date, movieData, selectedscreen, theatreId, theatreName} = req.body;
 
   try {
+    // Check if data with the same theatreId and date already exists
+    const existingData = await Allocatedata.findOne({ theatreId, date });
+
+    if (existingData) {
+      // Data already exists for the given theatreId and date
+      console.error('Data already exists:', existingData);
+      return res.status(400).json({ error: 'Data already exists for this theatre and date.' });
+    }
+
+    // Data doesn't exist, so save it
     const newData = new Allocatedata({
       admin,
       date,
       movieData,
       selectedscreen,
-      theatreId
+      theatreId,
+      theatreName
+
     });
 
     await newData.save();
     console.log('Data saved successfully.');
     res.status(200).json({ message: 'Data saved successfully.' });
   } catch (err) {
-    if (err.name === 'MongoError' && err.code === 11000) {
-      // Duplicate key error, handle accordingly
-      console.error('Duplicate data:', err);
-      res.status(400).json({ error: 'Data already exists.' });
-    } else {
-      console.error('Data already exists:', err);
-      res.status(500).json({ error: 'An error occurred while saving the data.' });
-    }
+    console.error('Error occurred while saving data:', err);
+    res.status(500).json({ error: 'An error occurred while saving the data.' });
   }
 });
+
+
   // Handle GET request to retrieve data
 app.get('/allocatedata', async (req, res) => {
     try {
@@ -199,10 +207,11 @@ app.delete('/allocatedata/:id', async (req, res) => {
 app.post('/bookingdata', async (req, res) => {
   try {
     const bookingData = req.body;
-    const {theatreId,screenId, theatreName, showDate, showTime, movieName, seats} = bookingData;
+    const {theatreId, screenId, userId, theatreName, showDate, showTime, movieName, seats} = bookingData;
 
     // Check if the seats are already booked for the given movie, date, and showtime
     const existingBooking = await Bookingdata.findOne({
+      userId,
       theatreId,
       screenId,
       theatreName,
