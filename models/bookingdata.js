@@ -1,16 +1,12 @@
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
-    booker: String,
-    customerMobile: String,
-    customerName: String,
-    gender: String,
-    paymentMethod: String,
-    upiRef: String,
-    tname: String,
-    mname: String,
-    sdate: String,
-    showtime: String,
+    theatreId: String,
+    screenId: String,
+    theatreName: String,
+    movieName: String,
+    showDate: String,
+    showTime: String,
     seats: [String],
   });
   

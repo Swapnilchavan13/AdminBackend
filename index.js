@@ -199,13 +199,16 @@ app.delete('/allocatedata/:id', async (req, res) => {
 app.post('/bookingdata', async (req, res) => {
   try {
     const bookingData = req.body;
-    const { mname, sdate, showtime, seats} = bookingData;
+    const {theatreId,screenId, theatreName, showDate, showTime, movieName, seats} = bookingData;
 
     // Check if the seats are already booked for the given movie, date, and showtime
     const existingBooking = await Bookingdata.findOne({
-      mname,
-      sdate,
-      showtime,
+      theatreId,
+      screenId,
+      theatreName,
+      showDate,
+      showTime,
+      movieName,
       seats: { $in: seats },
     });
 
