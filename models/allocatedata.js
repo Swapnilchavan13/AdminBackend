@@ -27,7 +27,42 @@ const allocateDataSchema = new mongoose.Schema({
   movieData: {
     type: Object,
     required: true
-  }
+  },
+
+  photo: {
+    type: [String],
+    required: true
+  },
+
+  isActive: { 
+    type: Boolean, 
+    default: false 
+  },
+
+  description: String,
+
+  startDate: Date,
+
+  endDate: Date,
+
+  startDate_EP: Date,
+
+  endDate_EP: Date,
+
+  category: String,
+
+  totalLikes: Number,
+
+  totalComments: Number,
+
+  likedBy: [{
+    email: String,
+    firstName: String,
+    lastName: String
+  }],
+
+  screenID: String
+
 });
 
 // Add unique index to prevent duplicates

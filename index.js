@@ -10,6 +10,8 @@ const port = 3005;
 const Theatredata = require('./models/theatredata')
 const Moviedata = require('./models/moviedata')
 const Bookingdata = require('./models/bookingdata')
+const Allshowdata = require('./models/allshowdata');
+
 
 // MongoDB Connection
 mongoose.set('strictQuery', false);
@@ -77,6 +79,56 @@ app.get('/theatredata', async (req, res) => {
     }
   });
 
+  ////////////for all show data ////////////////
+
+  // Handle POST request to save data
+app.post('/allshowdata', async (req, res) => {
+  const {
+    theaterID,
+    title,
+    description,
+    slots,
+    startDate,
+    endDate,
+    startDate_EP,
+    endDate_EP,
+    isActive,
+    category,
+    photos,
+    totalLikes,
+    totalComments,
+    likedBy,
+    screenID
+  } = req.body;
+
+  try {
+    const newData = new Allshowdata({
+      theaterID,
+      title,
+      description,
+      slots,
+      startDate,
+      endDate,
+      startDate_EP,
+      endDate_EP,
+      isActive,
+      category,
+      photos,
+      totalLikes,
+      totalComments,
+      likedBy,
+      screenID
+    });
+
+    await newData.save();
+    console.log('Data saved successfully.');
+    res.status(200).json({ message: 'Data saved successfully.' });
+  } catch (err) {
+    console.error('Error saving data:', err);
+    res.status(500).json({ error: 'An error occurred while saving the data.' });
+  }
+});
+
   ///////For Movie ////////
 
  // Handle POST request to save data
@@ -137,9 +189,28 @@ app.delete('/moviedata/:id', async (req, res) => {
   
   ///////////For Allote Data//////////////
   
-// Handle POST request to Allocate data
+/// Handle POST request to Allocate data
 app.post('/allocatedata', async (req, res) => {
-  const { admin, date, movieData, selectedscreen, theatreId, theatreName} = req.body;
+  const {
+    admin,
+    date,
+    movieData,
+    selectedscreen,
+    theatreId,
+    theatreName,
+    photo,
+    description,
+    isActive,
+    startDate,
+    endDate,
+    startDate_EP,
+    endDate_EP,
+    category,
+    totalLikes,
+    totalComments,
+    likedBy,
+    screenID
+  } = req.body;
 
   try {
     // Check if data with the same theatreId and date already exists
@@ -158,8 +229,19 @@ app.post('/allocatedata', async (req, res) => {
       movieData,
       selectedscreen,
       theatreId,
-      theatreName
-
+      theatreName,
+      description,
+      photo,
+      isActive,
+      startDate,
+      endDate,
+      startDate_EP,
+      endDate_EP,
+      category,
+      totalLikes,
+      totalComments,
+      likedBy,
+      screenID
     });
 
     await newData.save();

@@ -11,6 +11,7 @@ const bookingSchema = new mongoose.Schema({
     seats: [String],
   });
   
+
   // Create a model based on the schema
   const Bookingdata = mongoose.model('Bookingdata', bookingSchema);
 
