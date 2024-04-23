@@ -289,7 +289,7 @@ app.delete('/allocatedata/:id', async (req, res) => {
 app.post('/bookingdata', async (req, res) => {
   try {
     const bookingData = req.body;
-    const {theatreId, screenId, userId, theatreName, showDate, showTime, movieName, seats} = bookingData;
+    const {theatreId, screenId, userId, theatreName, showDate, showTime, movieName,isCancel, seats} = bookingData;
 
     // Check if the seats are already booked for the given movie, date, and showtime
     const existingBooking = await Bookingdata.findOne({
@@ -300,6 +300,7 @@ app.post('/bookingdata', async (req, res) => {
       showDate,
       showTime,
       movieName,
+      isCancel,
       seats: { $in: seats },
     });
 
@@ -313,6 +314,29 @@ app.post('/bookingdata', async (req, res) => {
     res.status(201).json({ message: 'Data stored successfully.' });
   } catch (error) {
     res.status(500).json({ error: 'Error storing data in the database.' });
+  }
+});
+
+// Define a PUT route to update the isCancel state of a booking
+app.put('/bookingdata/:bookingId', async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const { isCancel } = req.body;
+
+    // Find the booking by ID
+    const booking = await Bookingdata.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found.' });
+    }
+
+    // Update the isCancel state
+    booking.isCancel = isCancel;
+    await booking.save();
+
+    res.status(200).json({ message: 'Booking state updated successfully.' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error updating booking state.' });
   }
 });
 
