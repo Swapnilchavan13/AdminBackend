@@ -10,6 +10,7 @@ const dataSchema = new mongoose.Schema({
   startDate: Date,
   endDate: Date,
   posterImage: String,
+  extraImages: [{ type: String }], // Array to store extra images
   isDeleted: { type: Boolean, default: false },
   isExpired: { type: Boolean, default: false }
 });

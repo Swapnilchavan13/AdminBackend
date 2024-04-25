@@ -133,12 +133,13 @@ app.post('/allshowdata', async (req, res) => {
 
  // Handle POST request to save data
 app.post('/moviedata', async (req, res) => {
-  const { movieName, posterImage, movieDesc, movieRuntime, intervalTime, productionHouse, dateTime, startDate, endDate, isDeleted, isExpired } = req.body;
+  const { movieName, posterImage, movieDesc, movieRuntime, intervalTime,extraImages, productionHouse, dateTime, startDate, endDate, isDeleted, isExpired } = req.body;
 
   try {
     const newData = new Moviedata({
       movieName,
       posterImage,
+      extraImages,
       movieDesc,
       movieRuntime,
       intervalTime,
