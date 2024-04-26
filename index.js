@@ -265,6 +265,34 @@ app.get('/allocatedata', async (req, res) => {
       res.status(500).json({ error: 'An error occurred while fetching the data.' });
     }
   });
+
+
+  // Handle GET request to retrieve data by theatreId and selectedscreen
+app.get('/allocatedatafill', async (req, res) => {
+  try {
+      const { theatreId, selectedscreen } = req.query;
+      
+      // Check if both theatreId and selectedscreen are provided in the query parameters
+      if (!theatreId || !selectedscreen) {
+          return res.status(400).json({ error: 'Please provide both theatreId and selectedscreen parameters.' });
+      }
+
+      // Find data based on provided theatreId and selectedscreen
+      const data = await Allocatedata.find({ theatreId, selectedscreen });
+
+      // Check if data is found
+      if (!data || data.length === 0) {
+          return res.status(404).json({ error: 'No data found for the provided theatreId and selectedscreen.' });
+      }
+
+      // Send the found data
+      res.status(200).json(data);
+  } catch (err) {
+      console.error('Error fetching data:', err);
+      res.status(500).json({ error: 'An error occurred while fetching the data.' });
+  }
+});
+
   
   // Handle DELETE request to delete data by _id
 app.delete('/allocatedata/:id', async (req, res) => {
