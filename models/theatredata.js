@@ -6,6 +6,7 @@ const rowSchema = new mongoose.Schema({
 });
 
 const dataSchema = new mongoose.Schema({
+  theatreId:Number,
   theatreName: String,
   theatreLocation: String,
   theatreCity: String,

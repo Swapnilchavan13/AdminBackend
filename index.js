@@ -42,11 +42,11 @@ app.get('/', (req, res) => {
 
 // Handle POST request to save data
 app.post('/theatredata', async (req, res) => {
-  const { theatreName, theatreLocation, theatreCity, theatrePinCode, theatreOperatorEmail, theatreOperatorContact, theatreOperatorName, theatreOperatorIDproof, theaterScreens, rows } = req.body;
+  const { theatreId, theatreName, theatreLocation, theatreCity, theatrePinCode, theatreOperatorEmail, theatreOperatorContact, theatreOperatorName, theatreOperatorIDproof, theaterScreens, rows } = req.body;
 
   try {
     const newData = new Theatredata({
-    
+      theatreId,
       theatreName,
       theatreLocation,
       theatreCity,
