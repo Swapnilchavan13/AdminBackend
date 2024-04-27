@@ -16,6 +16,7 @@ const dataSchema = new mongoose.Schema({
   theatreOperatorName: String,
   theatreOperatorIDproof: String,
   theaterScreens: Number,
+  totalScreens: Number,
   isDeleted: { type: Boolean, default: false }, // assuming it's a boolean field
   rows: [rowSchema],
 });
