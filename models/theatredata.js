@@ -12,7 +12,7 @@ const dataSchema = new mongoose.Schema({
   theatreCity: String,
   theatrePinCode: Number,
   theatreOperatorEmail: String,
-  theatreOperatorContact: String,
+  theatreOperatorContact: Number,
   theatreOperatorName: String,
   theatreOperatorIDproof: String,
   theaterScreens: Number,

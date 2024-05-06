@@ -311,10 +311,20 @@ app.delete('/allocatedata/:id', async (req, res) => {
 
 
 // Define a POST route to store the booking data
+
 app.post('/bookingdata', async (req, res) => {
   try {
     const bookingData = req.body;
-    const {theatreId, screenId, cardId, userId, theatreName, showDate, showTime, movieName,isCancel, seats} = bookingData;
+
+    // Validate required fields
+    const requiredFields = ['theatreId', 'screenId', 'cardId', 'userId', 'theatreName', 'showDate', 'showTime', 'movieName', 'isCancel', 'seats'];
+    for (const field of requiredFields) {
+      if (!(field in bookingData)) {
+        return res.status(400).json({ error: `Missing required field: ${field}` });
+      }
+    }
+
+    const { theatreId, screenId, cardId, userId, theatreName, showDate, showTime, movieName, isCancel, seats } = bookingData;
 
     // Check if the seats are already booked for the given movie, date, and showtime
     const existingBooking = await Bookingdata.findOne({
@@ -339,15 +349,17 @@ app.post('/bookingdata', async (req, res) => {
 
     res.status(201).json({ message: 'Data stored successfully.' });
   } catch (error) {
+    console.error('Error storing data in the database:', error);
     res.status(500).json({ error: 'Error storing data in the database.' });
   }
 });
 
-// Define a PUT route to update the isCancel state of a booking
+
+// Define a PUT route to update the isCancel state of a booking// Define a PUT route to update the booking data
 app.put('/bookingdata/:bookingId', async (req, res) => {
   try {
     const { bookingId } = req.params;
-    const { isCancel } = req.body;
+    const updatedData = req.body;
 
     // Find the booking by ID
     const booking = await Bookingdata.findById(bookingId);
@@ -356,15 +368,16 @@ app.put('/bookingdata/:bookingId', async (req, res) => {
       return res.status(404).json({ error: 'Booking not found.' });
     }
 
-    // Update the isCancel state
-    booking.isCancel = isCancel;
+    // Update all fields with the provided data
+    Object.assign(booking, updatedData);
     await booking.save();
 
-    res.status(200).json({ message: 'Booking state updated successfully.' });
+    res.status(200).json({ message: 'Booking data updated successfully.' });
   } catch (error) {
-    res.status(500).json({ error: 'Error updating booking state.' });
+    res.status(500).json({ error: 'Error updating booking data.' });
   }
 });
+
 
 // Define a GET route to retrieve booking data
 app.get('/bookingdata', async (req, res) => {
