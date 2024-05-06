@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
-  userId: String,
-  theatreId: String,
-  screenId: String,
+  userId: Number,
+  cardId: Number,
+  theatreId: Number,
+  screenId: Number,
   theatreName: String,
   movieName: String,
   showDate: String,

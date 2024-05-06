@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const AllshowSchema = new mongoose.Schema({
-  theaterID: String,
+  theaterID: Number,
   title: String,
   description: String,
   slots: [{

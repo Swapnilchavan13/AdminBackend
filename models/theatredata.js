@@ -6,17 +6,18 @@ const rowSchema = new mongoose.Schema({
 });
 
 const dataSchema = new mongoose.Schema({
-  theatreId:Number,
+  theatreId: Number,
   theatreName: String,
   theatreLocation: String,
   theatreCity: String,
-  theatrePinCode: String,
+  theatrePinCode: Number,
   theatreOperatorEmail: String,
   theatreOperatorContact: String,
   theatreOperatorName: String,
   theatreOperatorIDproof: String,
   theaterScreens: Number,
   totalScreens: Number,
+  seatingCapacity : Number,
   isDeleted: { type: Boolean, default: false }, // assuming it's a boolean field
   rows: [rowSchema],
 });

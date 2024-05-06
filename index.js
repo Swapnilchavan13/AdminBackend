@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 
 // Handle POST request to save data
 app.post('/theatredata', async (req, res) => {
-  const { theatreId, theatreName, theatreLocation,totalScreens, theatreCity, theatrePinCode, theatreOperatorEmail, theatreOperatorContact, theatreOperatorName, theatreOperatorIDproof, theaterScreens, rows } = req.body;
+  const { theatreId, theatreName, theatreLocation, totalScreens, theatreCity, theatrePinCode, theatreOperatorEmail, theatreOperatorContact, theatreOperatorName, theatreOperatorIDproof, seatingCapacity, theaterScreens, rows } = req.body;
 
   try {
     const newData = new Theatredata({
@@ -56,6 +56,7 @@ app.post('/theatredata', async (req, res) => {
       theatreOperatorName,
       theatreOperatorIDproof,
       theaterScreens,
+      seatingCapacity,
       totalScreens,
       rows,
     });
@@ -190,16 +191,15 @@ app.delete('/moviedata/:id', async (req, res) => {
   });
   
   ///////////For Allote Data//////////////
-  
-/// Handle POST request to Allocate data
+// Handle POST request to Allocate data
 app.post('/allocatedata', async (req, res) => {
   const {
-    admin,
     date,
-    movieData,
-    selectedscreen,
     theatreId,
     theatreName,
+    selectedscreen,
+    city,
+    movieData,
     photo,
     description,
     isActive,
@@ -211,29 +211,21 @@ app.post('/allocatedata', async (req, res) => {
     totalLikes,
     totalComments,
     likedBy,
-    screenID
+    screenId,// Changed to screenId to match the request body
+    matchId
   } = req.body;
 
   try {
-    // Check if data with the same theatreId and date already exists
-    const existingData = await Allocatedata.findOne({ theatreId, date });
-
-    if (existingData) {
-      // Data already exists for the given theatreId and date
-      console.error('Data already exists:', existingData);
-      return res.status(400).json({ error: 'Data already exists for this theatre and date.' });
-    }
-
-    // Data doesn't exist, so save it
+    // Save the data without checking for duplicates
     const newData = new Allocatedata({
-      admin,
       date,
-      movieData,
-      selectedscreen,
       theatreId,
       theatreName,
-      description,
+      selectedscreen,
+      city,
+      movieData,
       photo,
+      description,
       isActive,
       startDate,
       endDate,
@@ -243,7 +235,8 @@ app.post('/allocatedata', async (req, res) => {
       totalLikes,
       totalComments,
       likedBy,
-      screenID
+      screenId, // Changed to screenId to match the schema
+      matchId
     });
 
     await newData.save();
@@ -256,16 +249,18 @@ app.post('/allocatedata', async (req, res) => {
 });
 
 
-  // Handle GET request to retrieve data
+
+// Handle GET request to retrieve data
 app.get('/allocatedata', async (req, res) => {
-    try {
-      const data = await Allocatedata.find();
-      res.status(200).json(data);
-    } catch (err) {
-      console.error('Error fetching data:', err);
-      res.status(500).json({ error: 'An error occurred while fetching the data.' });
-    }
-  });
+  try {
+    const data = await Allocatedata.find();
+    res.status(200).json(data);
+  } catch (err) {
+    console.error('Error fetching data:', err);
+    res.status(500).json({ error: 'An error occurred while fetching the data.' });
+  }
+});
+
 
 
   // Handle GET request to retrieve data by theatreId and selectedscreen
@@ -319,11 +314,12 @@ app.delete('/allocatedata/:id', async (req, res) => {
 app.post('/bookingdata', async (req, res) => {
   try {
     const bookingData = req.body;
-    const {theatreId, screenId, userId, theatreName, showDate, showTime, movieName,isCancel, seats} = bookingData;
+    const {theatreId, screenId, cardId, userId, theatreName, showDate, showTime, movieName,isCancel, seats} = bookingData;
 
     // Check if the seats are already booked for the given movie, date, and showtime
     const existingBooking = await Bookingdata.findOne({
       userId,
+      cardId,
       theatreId,
       screenId,
       theatreName,
