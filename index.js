@@ -356,6 +356,7 @@ app.post('/bookingdata', async (req, res) => {
 
 
 // Define a PUT route to update the isCancel state of a booking// Define a PUT route to update the booking data
+// Define a PUT route to update the booking data
 app.put('/bookingdata/:bookingId', async (req, res) => {
   try {
     const { bookingId } = req.params;
@@ -366,6 +367,12 @@ app.put('/bookingdata/:bookingId', async (req, res) => {
 
     if (!booking) {
       return res.status(404).json({ error: 'Booking not found.' });
+    }
+
+    // Check if any value is changed
+    const isDataChanged = Object.keys(updatedData).some(key => updatedData[key] !== booking[key]);
+    if (!isDataChanged) {
+      return res.status(400).json({ error: 'No changes detected in the booking data.' });
     }
 
     // Update all fields with the provided data
