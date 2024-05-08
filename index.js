@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 
 // Handle POST request to save data
 app.post('/theatredata', async (req, res) => {
-  const { theatreId, theatreName, theatreLocation, totalScreens, theatreCity, theatrePinCode, theatreOperatorEmail, theatreOperatorContact, theatreOperatorName, theatreOperatorIDproof, seatingCapacity, theaterScreens, rows } = req.body;
+  const { theatreId, theatreName, theatreLocation, totalScreens, theatreCity, theatrePinCode,pinCodesForAllocation, theatreOperatorEmail, theatreOperatorContact, theatreOperatorName, theatreOperatorIDproof, seatingCapacity, theaterScreens, rows } = req.body;
 
   try {
     const newData = new Theatredata({
@@ -51,6 +51,7 @@ app.post('/theatredata', async (req, res) => {
       theatreLocation,
       theatreCity,
       theatrePinCode,
+      pinCodesForAllocation,
       theatreOperatorEmail,
       theatreOperatorContact,
       theatreOperatorName,

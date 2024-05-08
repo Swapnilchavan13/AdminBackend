@@ -11,6 +11,7 @@ const dataSchema = new mongoose.Schema({
   theatreLocation: String,
   theatreCity: String,
   theatrePinCode: Number,
+  pinCodesForAllocation: [Number], 
   theatreOperatorEmail: String,
   theatreOperatorContact: Number,
   theatreOperatorName: String,
