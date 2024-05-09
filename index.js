@@ -82,6 +82,34 @@ app.get('/theatredata', async (req, res) => {
     }
   });
 
+
+  // Define a PUT route to update the pinCodesForAllocation field
+app.put('/theatredata/:theatreId', async (req, res) => {
+  const { theatreId } = req.params;
+  const { pinCodesForAllocation } = req.body;
+
+  try {
+    // Find the theatre by ID
+    const theatre = await Theatredata.findById(theatreId);
+
+    if (!theatre) {
+      return res.status(404).json({ error: 'Theatre not found.' });
+    }
+
+    // Update the pinCodesForAllocation field
+    theatre.pinCodesForAllocation = pinCodesForAllocation;
+
+    // Save the updated theatre
+    await theatre.save();
+
+    res.status(200).json({ message: 'Pin codes updated successfully.' });
+  } catch (error) {
+    console.error('Error updating pin codes:', error);
+    res.status(500).json({ error: 'An error occurred while updating pin codes.' });
+  }
+});
+
+
   ////////////for all show data ////////////////
 
   // Handle POST request to save data
