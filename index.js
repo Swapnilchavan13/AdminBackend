@@ -109,7 +109,6 @@ app.put('/theatredata/:theatreId', async (req, res) => {
   }
 });
 
-
   ////////////for all show data ////////////////
 
   // Handle POST request to save data
@@ -353,12 +352,13 @@ app.post('/bookingdata', async (req, res) => {
       }
     }
 
-    const { theatreId, screenId, cardId, userId, theatreName, showDate, showTime, movieName, isCancel, seats } = bookingData;
+    const { theatreId, screenId, isActive, cardId, userId, theatreName, showDate, showTime, movieName, isCancel, seats } = bookingData;
 
     // Check if the seats are already booked for the given movie, date, and showtime
     const existingBooking = await Bookingdata.findOne({
       userId,
       cardId,
+      isActive,
       theatreId,
       screenId,
       theatreName,
@@ -398,14 +398,18 @@ app.put('/bookingdata/:bookingId', async (req, res) => {
       return res.status(404).json({ error: 'Booking not found.' });
     }
 
-    // Check if any value is changed
-    const isDataChanged = Object.keys(updatedData).some(key => updatedData[key] !== booking[key]);
+    // Update isActive field if provided in the request body
+    if (updatedData.hasOwnProperty('isActive')) {
+      booking.isActive = updatedData.isActive;
+    }
+
+    // Check if any other value is changed
+    const isDataChanged = Object.keys(updatedData).some(key => key !== 'isActive' && updatedData[key] !== booking[key]);
     if (!isDataChanged) {
       return res.status(400).json({ error: 'No changes detected in the booking data.' });
     }
 
-    // Update all fields with the provided data
-    Object.assign(booking, updatedData);
+    // Save the updated booking data
     await booking.save();
 
     res.status(200).json({ message: 'Booking data updated successfully.' });
@@ -413,6 +417,7 @@ app.put('/bookingdata/:bookingId', async (req, res) => {
     res.status(500).json({ error: 'Error updating booking data.' });
   }
 });
+
 
 
 // Define a GET route to retrieve booking data
