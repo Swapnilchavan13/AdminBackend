@@ -12,7 +12,6 @@ const Moviedata = require('./models/moviedata')
 const Bookingdata = require('./models/bookingdata')
 const Allshowdata = require('./models/allshowdata');
 
-
 // MongoDB Connection
 mongoose.set('strictQuery', false);
 
