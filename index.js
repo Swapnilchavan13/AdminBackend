@@ -98,7 +98,6 @@ app.put('/theatredata/:theatreId', async (req, res) => {
     // Update the pinCodesForAllocation field
     theatre.pinCodesForAllocation = pinCodesForAllocation;
 
-    // Save the updated theatre
     await theatre.save();
 
     res.status(200).json({ message: 'Pin codes updated successfully.' });
