@@ -1,16 +1,21 @@
 const express = require('express');
-const Allocatedata = require('./models/allocatedata')
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
 const port = 3005;
+const multer = require('multer');
 
+const path = require('path');
+
+const Allocatedata = require('./models/allocatedata')
 const Theatredata = require('./models/theatredata')
 const Moviedata = require('./models/moviedata')
 const Bookingdata = require('./models/bookingdata')
-const Allshowdata = require('./models/allshowdata');
+const Allshowdata = require('./models/allshowdata')
+const Evn = require('./models/Evn');
+
 
 // MongoDB Connection
 mongoose.set('strictQuery', false);
@@ -30,14 +35,85 @@ const connectDB = async () => {
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-
 app.use(cors({ origin: '*' }));
+
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage: storage });
+
 
 // Simple get request
 app.get('/', (req, res) => {
   res.send('Hello World');
 });
+
+
+//Post All events
+app.post('/eventupload', upload.fields([
+  { name: 'images', maxCount: 10 },
+  { name: 'video', maxCount: 1 },
+]), async (req, res) => {
+  try {
+    const {
+      eventName,
+      eventDescription,
+      eventCategory,
+      pincode,
+      city,
+      eventAddress,
+      startDate,
+      endDate,
+      eventTime,
+      numberOfSeats,
+      pricePerSeat,
+    } = req.body;
+    const images = req.files['images']?.map((file) => `http://62.72.59.146:3005/uploads/${file.filename}`) || [];
+    const video = req.files['video']?.[0]?.path ? `http://62.72.59.146:3005/uploads/${req.files['video'][0].filename}` : null;
+
+    const evn = new Evn({ eventName,
+      eventDescription,
+      eventCategory,
+      pincode,
+      city,
+      eventAddress,
+      startDate,
+      endDate,
+      eventTime,
+      numberOfSeats,
+      pricePerSeat, 
+      images, 
+      video });
+    await evn.save();
+
+    res.status(200).json({ message: 'Files uploaded successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+//Geet all Events
+app.get('/allevents', async (req, res) => {
+  try {
+    const evns = await Evn.find();
+    res.status(200).json(evns);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
 
 // Handle POST request to save data
 app.post('/theatredata', async (req, res) => {
