@@ -14,7 +14,9 @@ const Theatredata = require('./models/theatredata')
 const Moviedata = require('./models/moviedata')
 const Bookingdata = require('./models/bookingdata')
 const Allshowdata = require('./models/allshowdata')
+// const Event = require('./models/Event')
 const Evn = require('./models/evn')
+
 
 // MongoDB Connection
 mongoose.set('strictQuery', false);
@@ -49,12 +51,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
-
-// Simple get request
-app.get('/', (req, res) => {
-  res.send('Hello World');
-});
 
 
 //Post All events
@@ -112,6 +108,11 @@ app.get('/allevents', async (req, res) => {
   }
 });
 
+
+// Simple get request
+app.get('/', (req, res) => {
+  res.send('Hello World');
+});
 
 
 // Handle POST request to save data
