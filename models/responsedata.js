@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const responceSchema = new mongoose.Schema({
+const responseSchema = new mongoose.Schema({
   name: String,
   mobile: Number,
   email: String,
@@ -9,6 +9,6 @@ const responceSchema = new mongoose.Schema({
 });
 
   // Create a model based on the schema
-  const Responcedata = mongoose.model('Responcedata', responceSchema);
+  const Responsedata = mongoose.model('Responsedata', responseSchema);
 
-  module.exports = Responcedata;
+  module.exports = Responsedata;

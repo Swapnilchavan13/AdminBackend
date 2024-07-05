@@ -17,7 +17,7 @@ const Allshowdata = require('./models/allshowdata')
 // const Event = require('./models/Event')
 const Evn = require('./models/evn')
 
-const Responce = require('./models/responcedata')
+const Response = require('./models/responsedata')
 
 
 // MongoDB Connection
@@ -111,14 +111,14 @@ app.get('/allevents', async (req, res) => {
 });
 
 
-/////Responce ////
+/////Response ////
 
 app.post('/submitresponse', async (req, res) => {
   try {
     const { name, mobile, email, questionType, comment } = req.body;
 
     // Create a new response instance
-    const newResponse = new Responce({
+    const newResponse = new Response({
       name,
       mobile,
       email,
@@ -141,7 +141,7 @@ app.post('/submitresponse', async (req, res) => {
 app.get('/responses', async (req, res) => {
   try {
     // Fetch all response documents from the database
-    const responses = await Responce.find();
+    const responses = await Response.find();
 
     // Send the responses back to the client
     res.status(200).json(responses);
