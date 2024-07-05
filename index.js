@@ -17,6 +17,8 @@ const Allshowdata = require('./models/allshowdata')
 // const Event = require('./models/Event')
 const Evn = require('./models/evn')
 
+const Responce = require('./models/responcedata')
+
 
 // MongoDB Connection
 mongoose.set('strictQuery', false);
@@ -104,6 +106,47 @@ app.get('/allevents', async (req, res) => {
     res.status(200).json(evns);
   } catch (err) {
     console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+/////Responce ////
+
+app.post('/submitresponse', async (req, res) => {
+  try {
+    const { name, mobile, email, questionType, comment } = req.body;
+
+    // Create a new response instance
+    const newResponse = new Responce({
+      name,
+      mobile,
+      email,
+      questionType,
+      comment,
+    });
+
+    // Save the response to the database
+    await newResponse.save();
+
+    // Send a success response
+    res.status(201).json({ message: 'Response submitted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+app.get('/responses', async (req, res) => {
+  try {
+    // Fetch all response documents from the database
+    const responses = await Responce.find();
+
+    // Send the responses back to the client
+    res.status(200).json(responses);
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 });
