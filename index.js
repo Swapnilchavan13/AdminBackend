@@ -14,6 +14,7 @@ const Theatredata = require('./models/theatredata')
 const Moviedata = require('./models/moviedata')
 const Bookingdata = require('./models/bookingdata')
 const Allshowdata = require('./models/allshowdata')
+const Game = require('./models/gamesdata');
 // const Event = require('./models/Event')
 const Evn = require('./models/evn')
 
@@ -53,6 +54,145 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+
+//CRUD OF Game CMS//
+// Create a new game
+app.post('/games', upload.fields([
+  { name: 'image0', maxCount: 1 },
+  { name: 'image1', maxCount: 1 },
+  { name: 'image2', maxCount: 1 },
+  { name: 'logo', maxCount: 1 },
+]), async (req, res) => {
+  try {
+    const {
+      title,
+      likes,
+      description,
+      prize,
+      winners,
+      category,
+      entryFees,
+      numberOfEntries,
+      organizerName,
+    } = req.body;
+
+    const images = [
+      req.files['image0'] ? `http://62.72.59.146:3005/uploads/${req.files['image0'][0].filename}` : '',
+      req.files['image1'] ? `http://62.72.59.146:3005/uploads/${req.files['image1'][0].filename}` : '',
+      req.files['image2'] ? `http://62.72.59.146:3005/uploads/${req.files['image2'][0].filename}` : '',
+    ];
+
+    const logo = req.files['logo'] ? `http://62.72.59.146:3005/uploads/${req.files['logo'][0].filename}` : '';
+
+    const game = new Game({
+      title,
+      likes: parseInt(likes),
+      description,
+      prize,
+      winners: parseInt(winners),
+      images,
+      category,
+      entryFees,
+      numberOfEntries: parseInt(numberOfEntries),
+      organizerName,
+      logo,
+    });
+
+    await game.save();
+    res.status(201).json(game);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get all games
+app.get('/games', async (req, res) => {
+  try {
+    const games = await Game.find();
+    res.status(200).json(games);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get a game by ID
+app.get('/games/:id', async (req, res) => {
+  try {
+    const game = await Game.findById(req.params.id);
+    if (!game) return res.status(404).json({ message: 'Game not found' });
+    res.status(200).json(game);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update a game by ID
+app.put('/games/:id', upload.fields([
+  { name: 'image0', maxCount: 1 },
+  { name: 'image1', maxCount: 1 },
+  { name: 'image2', maxCount: 1 },
+  { name: 'logo', maxCount: 1 },
+]), async (req, res) => {
+  try {
+    const {
+      title,
+      likes,
+      description,
+      prize,
+      winners,
+      category,
+      entryFees,
+      numberOfEntries,
+      organizerName,
+    } = req.body;
+
+    const images = [
+      req.files['image0'] ? `http://62.72.59.146:3005/uploads/${req.files['image0'][0].filename}` : '',
+      req.files['image1'] ? `http://62.72.59.146:3005/uploads/${req.files['image1'][0].filename}` : '',
+      req.files['image2'] ? `http://62.72.59.146:3005/uploads/${req.files['image2'][0].filename}` : '',
+    ];
+
+    const logo = req.files['logo'] ? `http://62.72.59.146:3005/uploads/${req.files['logo'][0].filename}` : '';
+
+    const game = await Game.findByIdAndUpdate(req.params.id, {
+      title,
+      likes: parseInt(likes),
+      description,
+      prize,
+      winners: parseInt(winners),
+      images,
+      category,
+      entryFees,
+      numberOfEntries: parseInt(numberOfEntries),
+      organizerName,
+      logo,
+    }, { new: true });
+
+    if (!game) return res.status(404).json({ message: 'Game not found' });
+
+    res.status(200).json(game);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Delete a game by ID
+app.delete('/games/:id', async (req, res) => {
+  try {
+    const game = await Game.findByIdAndDelete(req.params.id);
+    if (!game) return res.status(404).json({ message: 'Game not found' });
+    res.status(200).json({ message: 'Game deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 
 //Post All events
