@@ -9,12 +9,13 @@ const multer = require('multer');
 
 const path = require('path');
 
-const Allocatedata = require('./models/allocatedata')
+const Allocatedata = require('./models/allocatedata')   
 const Theatredata = require('./models/theatredata')
 const Moviedata = require('./models/moviedata')
 const Bookingdata = require('./models/bookingdata')
 const Allshowdata = require('./models/allshowdata')
 const Game = require('./models/gamesdata');
+const Merchant = require('./models/Merchant');
 // const Event = require('./models/Event')
 const Evn = require('./models/evn')
 
@@ -56,6 +57,42 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
+
+
+// POST request to create a new merchant
+app.post('/merchants', async (req, res) => {
+  try {
+    const { businessName, businessAddress, contactPerson, contactEmail, contactPhoneNumber, loginPin } = req.body;
+
+    // Create a new merchant
+    const newMerchant = new Merchant({
+      businessName,
+      businessAddress,
+      contactPerson,
+      contactEmail,
+      contactPhoneNumber,
+      loginPin,
+    });
+
+    // Save the merchant to the database
+    const savedMerchant = await newMerchant.save();
+
+    res.status(201).json(savedMerchant);
+  } catch (error) {
+    res.status(500).json({ message: 'Error creating merchant', error });
+  }
+});
+
+// GET request to fetch all merchants
+app.get('/allmerchants', async (req, res) => {
+  try {
+    const merchants = await Merchant.find();
+    res.status(200).json(merchants);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching merchants', error });
+  }
+});
+
 //CRUD OF Game CMS//
 // Create a new game
 app.post('/games', upload.fields([
@@ -75,15 +112,17 @@ app.post('/games', upload.fields([
       entryFees,
       numberOfEntries,
       organizerName,
+      startDate,
+      endDate,
     } = req.body;
 
     const images = [
-      req.files['image0'] ? `http://62.72.59.146:3005/uploads/${req.files['image0'][0].filename}` : '',
-      req.files['image1'] ? `http://62.72.59.146:3005/uploads/${req.files['image1'][0].filename}` : '',
-      req.files['image2'] ? `http://62.72.59.146:3005/uploads/${req.files['image2'][0].filename}` : '',
+      req.files['image0'] ? `http://localhost:3005/uploads/${req.files['image0'][0].filename}` : '',
+      req.files['image1'] ? `http://localhost:3005/uploads/${req.files['image1'][0].filename}` : '',
+      req.files['image2'] ? `http://localhost:3005/uploads/${req.files['image2'][0].filename}` : '',
     ];
 
-    const logo = req.files['logo'] ? `http://62.72.59.146:3005/uploads/${req.files['logo'][0].filename}` : '';
+    const logo = req.files['logo'] ? `http://localhost:3005/uploads/${req.files['logo'][0].filename}` : '';
 
     const game = new Game({
       title,
@@ -97,6 +136,8 @@ app.post('/games', upload.fields([
       numberOfEntries: parseInt(numberOfEntries),
       organizerName,
       logo,
+      startDate: new Date(startDate), // Handle startDate
+      endDate: new Date(endDate),     // Handle endDate
     });
 
     await game.save();
@@ -131,6 +172,7 @@ app.get('/games/:id', async (req, res) => {
 });
 
 // Update a game by ID
+// Update a game by ID
 app.put('/games/:id', upload.fields([
   { name: 'image0', maxCount: 1 },
   { name: 'image1', maxCount: 1 },
@@ -148,15 +190,17 @@ app.put('/games/:id', upload.fields([
       entryFees,
       numberOfEntries,
       organizerName,
+      startDate,
+      endDate,
     } = req.body;
 
     const images = [
-      req.files['image0'] ? `http://62.72.59.146:3005/uploads/${req.files['image0'][0].filename}` : '',
-      req.files['image1'] ? `http://62.72.59.146:3005/uploads/${req.files['image1'][0].filename}` : '',
-      req.files['image2'] ? `http://62.72.59.146:3005/uploads/${req.files['image2'][0].filename}` : '',
+      req.files['image0'] ? `http://localhost:3005/uploads/${req.files['image0'][0].filename}` : '',
+      req.files['image1'] ? `http://localhost:3005/uploads/${req.files['image1'][0].filename}` : '',
+      req.files['image2'] ? `http://localhost:3005/uploads/${req.files['image2'][0].filename}` : '',
     ];
 
-    const logo = req.files['logo'] ? `http://62.72.59.146:3005/uploads/${req.files['logo'][0].filename}` : '';
+    const logo = req.files['logo'] ? `http://localhost:3005/uploads/${req.files['logo'][0].filename}` : '';
 
     const game = await Game.findByIdAndUpdate(req.params.id, {
       title,
@@ -170,6 +214,8 @@ app.put('/games/:id', upload.fields([
       numberOfEntries: parseInt(numberOfEntries),
       organizerName,
       logo,
+      startDate: new Date(startDate), // Handle startDate
+      endDate: new Date(endDate),     // Handle endDate
     }, { new: true });
 
     if (!game) return res.status(404).json({ message: 'Game not found' });
@@ -180,6 +226,7 @@ app.put('/games/:id', upload.fields([
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 // Delete a game by ID
 app.delete('/games/:id', async (req, res) => {
@@ -192,7 +239,6 @@ app.delete('/games/:id', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 
 //Post All events
