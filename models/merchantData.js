@@ -24,7 +24,6 @@ const merchantDataSchema = new mongoose.Schema({
   profileImage: String,
   personName: String,
   lastName: String,
-  username: String,
   password: String,
   numberOfPeople: String,
   brandLogo: String
