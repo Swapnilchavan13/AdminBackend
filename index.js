@@ -23,6 +23,8 @@ const Response = require('./models/responsedata')
 
 const FormData = require('./models/FormData');// MongoDB Connection
 
+const MerchantData = require('./models/merchantData');
+
 
 
 // MongoDB Connection
@@ -63,6 +65,46 @@ const upload = multer({ storage: storage });
 
 
 /////////////////////////////////////////////////////////////
+app.post('/addmerchants', upload.fields([
+  { name: 'profileImage', maxCount: 1 },
+  { name: 'brandLogo', maxCount: 1 },
+  { name: 'businessLicense', maxCount: 1 },
+  { name: 'gstCertificate', maxCount: 1 },
+  { name: 'panCard', maxCount: 1 },
+  { name: 'proofOfAddress', maxCount: 1 }
+]), async (req, res) => {
+  try {
+    const newMerchant = new MerchantData({
+      ...req.body,
+      profileImage: req.files.profileImage ? req.files.profileImage[0].path : null,
+      brandLogo: req.files.brandLogo ? req.files.brandLogo[0].path : null,
+      businessLicense: req.files.businessLicense ? req.files.businessLicense[0].path : null,
+      gstCertificate: req.files.gstCertificate ? req.files.gstCertificate[0].path : null,
+      panCard: req.files.panCard ? req.files.panCard[0].path : null,
+      proofOfAddress: req.files.proofOfAddress ? req.files.proofOfAddress[0].path : null
+    });
+    
+    await newMerchant.save();
+    res.status(201).json(newMerchant);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// GET route to fetch all merchants
+app.get('/getmerchants', async (req, res) => {
+  try {
+    const merchants = await MerchantData.find();
+    res.status(200).json(merchants);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+
+////////////////////////////////
+
 
 // Handle form submission
 app.post('/submit', upload.fields([
