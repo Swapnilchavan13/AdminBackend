@@ -274,12 +274,12 @@ app.post('/games', upload.fields([
     } = req.body;
 
     const images = [
-      req.files['image0'] ? `http://localhost:3005/uploads/${req.files['image0'][0].filename}` : '',
-      req.files['image1'] ? `http://localhost:3005/uploads/${req.files['image1'][0].filename}` : '',
-      req.files['image2'] ? `http://localhost:3005/uploads/${req.files['image2'][0].filename}` : '',
+      req.files['image0'] ? `http://62.72.59.146:3005/uploads/${req.files['image0'][0].filename}` : '',
+      req.files['image1'] ? `http://62.72.59.146:3005/uploads/${req.files['image1'][0].filename}` : '',
+      req.files['image2'] ? `http://62.72.59.146:3005/uploads/${req.files['image2'][0].filename}` : '',
     ];
 
-    const logo = req.files['logo'] ? `http://localhost:3005/uploads/${req.files['logo'][0].filename}` : '';
+    const logo = req.files['logo'] ? `http://62.72.59.146:3005/uploads/${req.files['logo'][0].filename}` : '';
 
     const game = new Game({
       title,
