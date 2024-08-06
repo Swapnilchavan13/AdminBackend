@@ -15,6 +15,7 @@ const dataSchema = new mongoose.Schema({
     photo2: { type: String },
     additionalPhoto1: { type: String },
     additionalPhoto2: { type: String },
+    unit: { type: String },
     price: { type: String, required: true },
     discountedPrice: { type: String },
     createdAt: { type: Date, default: Date.now }

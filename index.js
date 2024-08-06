@@ -101,7 +101,22 @@ app.get('/getmerchants', async (req, res) => {
   }
 });
 
+// GET route to fetch a single merchant by mobile number
+app.get('/getmerchant/:contactPhoneNumber', async (req, res) => {
+  const { contactPhoneNumber } = req.params;
 
+  try {
+    const merchant = await MerchantData.findOne({ contactPhoneNumber: contactPhoneNumber });
+    
+    if (!merchant) {
+      return res.status(404).json({ message: 'Merchant not found' });
+    }
+    
+    res.status(200).json(merchant);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 ////////////////////////////////
 
@@ -316,12 +331,12 @@ app.post('/games', upload.fields([
     } = req.body;
 
     const images = [
-      req.files['image0'] ? `http://62.72.59.146:3005/uploads/${req.files['image0'][0].filename}` : '',
-      req.files['image1'] ? `http://62.72.59.146:3005/uploads/${req.files['image1'][0].filename}` : '',
-      req.files['image2'] ? `http://62.72.59.146:3005/uploads/${req.files['image2'][0].filename}` : '',
+      req.files['image0'] ? `http://localhost:3005/uploads/${req.files['image0'][0].filename}` : '',
+      req.files['image1'] ? `http://localhost:3005/uploads/${req.files['image1'][0].filename}` : '',
+      req.files['image2'] ? `http://localhost:3005/uploads/${req.files['image2'][0].filename}` : '',
     ];
 
-    const logo = req.files['logo'] ? `http://62.72.59.146:3005/uploads/${req.files['logo'][0].filename}` : '';
+    const logo = req.files['logo'] ? `http://localhost:3005/uploads/${req.files['logo'][0].filename}` : '';
 
     const game = new Game({
       title,
