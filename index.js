@@ -456,49 +456,49 @@ app.delete('/games/:id', async (req, res) => {
 });
 
 
-//Post All events
-app.post('/eventupload', upload.fields([
-  { name: 'images', maxCount: 10 },
-  { name: 'video', maxCount: 1 },
-]), async (req, res) => {
-  try {
-    const {
-      eventName,
-      eventDescription,
-      eventCategory,
-      pincode,
-      city,
-      eventAddress,
-      startDate,
-      endDate,
-      eventTime,
-      numberOfSeats,
-      pricePerSeat,
-    } = req.body;
-    // const images = req.files['images']?.map((file) => `http://62.72.59.146:3005/uploads/${file.filename}`) || [];
-    const video = req.files['video']?.[0]?.path ? `http://62.72.59.146:3005/uploads/${req.files['video'][0].filename}` : null;
+// //Post All events
+// app.post('/eventupload', upload.fields([
+//   { name: 'images', maxCount: 10 },
+//   { name: 'video', maxCount: 1 },
+// ]), async (req, res) => {
+//   try {
+//     const {
+//       eventName,
+//       eventDescription,
+//       eventCategory,
+//       pincode,
+//       city,
+//       eventAddress,
+//       startDate,
+//       endDate,
+//       eventTime,
+//       numberOfSeats,
+//       pricePerSeat,
+//     } = req.body;
+//     // const images = req.files['images']?.map((file) => `http://62.72.59.146:3005/uploads/${file.filename}`) || [];
+//     const video = req.files['video']?.[0]?.path ? `http://62.72.59.146:3005/uploads/${req.files['video'][0].filename}` : null;
 
-    const evn = new Evn({ eventName,
-      eventDescription,
-      eventCategory,
-      pincode,
-      city,
-      eventAddress,
-      startDate,
-      endDate,
-      eventTime,
-      numberOfSeats,
-      pricePerSeat, 
-      images, 
-      video });
-    await evn.save();
+//     const evn = new Evn({ eventName,
+//       eventDescription,
+//       eventCategory,
+//       pincode,
+//       city,
+//       eventAddress,
+//       startDate,
+//       endDate,
+//       eventTime,
+//       numberOfSeats,
+//       pricePerSeat, 
+//       images, 
+//       video });
+//     await evn.save();
 
-    res.status(200).json({ message: 'Files uploaded successfully' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+//     res.status(200).json({ message: 'Files uploaded successfully' });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// });
 
 //Geet all Events
 app.get('/allevents', async (req, res) => {
