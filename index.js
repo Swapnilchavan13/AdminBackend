@@ -475,7 +475,7 @@ app.post('/eventupload', upload.fields([
       numberOfSeats,
       pricePerSeat,
     } = req.body;
-    const images = req.files['images']?.map((file) => `http://62.72.59.146:3005/uploads/${file.filename}`) || [];
+    // const images = req.files['images']?.map((file) => `http://62.72.59.146:3005/uploads/${file.filename}`) || [];
     const video = req.files['video']?.[0]?.path ? `http://62.72.59.146:3005/uploads/${req.files['video'][0].filename}` : null;
 
     const evn = new Evn({ eventName,
