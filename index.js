@@ -168,6 +168,7 @@ app.post('/submit', upload.fields([
       photo2: req.files.photo2 ? req.files.photo2[0].path : '',
       additionalPhoto1: req.files.additionalPhoto1 ? req.files.additionalPhoto1[0].path : '',
       additionalPhoto2: req.files.additionalPhoto2 ? req.files.additionalPhoto2[0].path : '',
+      unit: req.body.unit,
       price: req.body.price,
       discountedPrice: req.body.discountedPrice
     });
