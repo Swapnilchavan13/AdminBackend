@@ -13,7 +13,7 @@ const Allocatedata = require('./models/allocatedata')
 const Theatredata = require('./models/theatredata')
 const Moviedata = require('./models/moviedata')
 const Bookingdata = require('./models/bookingdata')
-const Allshowdata = require('./models/allshowdata')
+// const Allshowdata = require('./models/allshowdata')
 const Game = require('./models/gamesdata');
 const Merchant = require('./models/Merchant');
 // const Event = require('./models/Event')
@@ -501,15 +501,15 @@ app.delete('/games/:id', async (req, res) => {
 // });
 
 //Geet all Events
-app.get('/allevents', async (req, res) => {
-  try {
-    const evns = await Evn.find();
-    res.status(200).json(evns);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+// app.get('/allevents', async (req, res) => {
+//   try {
+//     const evns = await Evn.find();
+//     res.status(200).json(evns);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// });
 
 
 /////Response ////
