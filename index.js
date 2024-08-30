@@ -72,11 +72,10 @@ const upload = multer({ storage: storage });
 
 
 ///////////////////////////////////////////////////////
-
 // POST request to add CMS data
 app.post('/uploadcms', upload.array('images', 10), async (req, res) => {
   try {
-    const { location, category, title, entryType, directionLink, about } = req.body;
+    const { location, category, title, entryType, directionLink, about, timing, contactNumber, website } = req.body;
     
     // Handle images
     const images = req.files.map(file => file.path);
@@ -88,7 +87,10 @@ app.post('/uploadcms', upload.array('images', 10), async (req, res) => {
       title,
       entryType,
       directionLink,
-      about
+      about,
+      timing,
+      contactNumber,
+      website
     });
 
     await newCmsData.save();
