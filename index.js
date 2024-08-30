@@ -6,6 +6,8 @@ const cors = require('cors');
 const app = express();
 const port = 3005;
 const multer = require('multer');
+const fs = require('fs');
+
 
 const https = require('https');  // Required for OTP functions
 
@@ -26,6 +28,9 @@ const Response = require('./models/responsedata')
 const FormData = require('./models/FormData');// MongoDB Connection
 
 const MerchantData = require('./models/merchantData');
+
+const CmsData = require('./models/CmsData');
+
 
 
 
@@ -66,6 +71,71 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
+///////////////////////////////////////////////////////
+
+// POST request to add CMS data
+app.post('/uploadcms', upload.array('images', 10), async (req, res) => {
+  try {
+    const { location, category, title, entryType, directionLink, about } = req.body;
+    
+    // Handle images
+    const images = req.files.map(file => file.path);
+
+    const newCmsData = new CmsData({
+      location,
+      category,
+      images,
+      title,
+      entryType,
+      directionLink,
+      about
+    });
+
+    await newCmsData.save();
+    res.status(201).json({ message: 'CMS data added successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error adding CMS data' });
+  }
+});
+
+// GET request to fetch all CMS data
+app.get('/getcms', async (req, res) => {
+  try {
+    const cmsData = await CmsData.find();
+    res.status(200).json(cmsData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching CMS data' });
+  }
+});
+
+// Route to handle deleting CMS data
+app.delete('/deletecms/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const cmsData = await CmsData.findById(id);
+
+    if (cmsData) {
+      // Delete images from the file system
+      cmsData.images.forEach(img => {
+        const filePath = path.join(__dirname, img);
+        fs.unlink(filePath, (err) => {
+          if (err) console.error(`Error deleting file ${img}:`, err);
+        });
+      });
+
+      // Delete the CMS data from the database
+      await CmsData.findByIdAndDelete(id);
+      res.json({ message: 'CMS data deleted successfully' });
+    } else {
+      res.status(404).json({ message: 'CMS data not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error deleting CMS data' });
+  }
+});
 
 
 
