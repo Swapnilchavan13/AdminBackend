@@ -28,6 +28,18 @@ const cmsDataSchema = new mongoose.Schema({
   about: {
     type: String,
     required: true
+  },
+  timing: {
+    type: String,
+    // Optional field
+  },
+  contactNumber: {
+    type: String,
+    // Optional field
+  },
+  website: {
+    type: String,
+    // Optional field
   }
 });
 
