@@ -31,6 +31,11 @@ const MerchantData = require('./models/merchantData');
 
 const CmsData = require('./models/CmsData');
 
+const CmsSchema = require('./models/cmsSchema');
+
+
+
+
 
 
 
@@ -59,6 +64,7 @@ app.use(cors({ origin: '*' }));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Multer Configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
@@ -71,7 +77,95 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 
-///////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+
+// Create CMS Data
+app.post('/addcmsdata', upload.fields([{ name: 'images', maxCount: 10 }, { name: 'files', maxCount: 10 }]), async (req, res) => {
+  try {
+    const { title, description, videos, detailedText, subCategory, category } = req.body;
+    const images = req.files['images'] ? req.files['images'].map(file => file.path) : [];
+    const files = req.files['files'] ? req.files['files'].map(file => file.path) : [];
+
+    const newCmsData = new CmsSchema({
+      title,
+      description,
+      images,
+      videos: videos ? videos.split(',') : [],
+      detailedText,
+      files,
+      subCategory,
+      category,
+    });
+
+    await newCmsData.save();
+    res.status(201).json(newCmsData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error adding CMS data' });
+  }
+});
+
+// Get all CMS Data
+app.get('/getcmsdata', async (req, res) => {
+  try {
+    const cmsData = await CmsSchema.find();
+    res.status(200).json(cmsData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching CMS data' });
+  }
+});
+
+// Update CMS Data
+app.put('/cms/:id', upload.fields([{ name: 'images', maxCount: 10 }, { name: 'files', maxCount: 10 }]), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, videos, detailedText, subCategory, category } = req.body;
+    const images = req.files['images'] ? req.files['images'].map(file => file.path) : [];
+    const files = req.files['files'] ? req.files['files'].map(file => file.path) : [];
+
+    const updatedData = await CmsSchema.findByIdAndUpdate(
+      id,
+      {
+        title,
+        description,
+        images,
+        videos: videos ? videos.split(',') : [],
+        detailedText,
+        files,
+        subCategory,
+        category,
+      },
+      { new: true } // Return the updated document
+    );
+
+    res.status(200).json(updatedData);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating CMS data' });
+  }
+});
+
+// Delete CMS Data
+app.delete('/cms/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await CmsSchema.findByIdAndDelete(id);
+    res.status(200).json({ message: 'CMS data deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error deleting CMS data' });
+  }
+});
+
+////////////////////////////////////////////////////////
+
+
+
+
+
+
 // POST request to add CMS data
 app.post('/uploadcms', upload.array('images', 10), async (req, res) => {
   try {
