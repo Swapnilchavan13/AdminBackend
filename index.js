@@ -88,7 +88,7 @@ app.post('/addcmsdata', upload.fields([{ name: 'images', maxCount: 10 }, { name:
       title,
       description,
       images,
-      videos: videos ? videos.split(',').map(url => url.trim()) : [],
+      videos: videos ? videos.split(',') : [],
       detailedText,
       files,
       subCategory,
@@ -128,7 +128,7 @@ app.put('/cms/:id', upload.fields([{ name: 'images', maxCount: 10 }, { name: 'fi
         title,
         description,
         images,
-        videos: videos ? videos.split(',').map(url => url.trim()) : [],
+        videos: videos ? videos.split(',') : [],
         detailedText,
         files,
         subCategory,
@@ -145,7 +145,7 @@ app.put('/cms/:id', upload.fields([{ name: 'images', maxCount: 10 }, { name: 'fi
 });
 
 // Delete CMS Data
-app.delete('/cms', async (req, res) => {
+app.delete('/cm/:id', async (req, res) => {
   try {
     const { id } = req.params;
     await CmsSchema.findByIdAndDelete(id);
