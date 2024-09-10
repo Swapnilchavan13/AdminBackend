@@ -145,7 +145,7 @@ app.put('/cms/:id', upload.fields([{ name: 'images', maxCount: 10 }, { name: 'fi
 });
 
 // Delete CMS Data
-app.delete('/delete', async (req, res) => {
+app.delete('/cms', async (req, res) => {
   try {
     const { id } = req.params;
     await CmsSchema.findByIdAndDelete(id);
