@@ -36,9 +36,6 @@ const CmsSchema = require('./models/cmsSchema');
 
 
 
-
-
-
 // MongoDB Connection
 mongoose.set('strictQuery', false);
 
@@ -91,7 +88,7 @@ app.post('/addcmsdata', upload.fields([{ name: 'images', maxCount: 10 }, { name:
       title,
       description,
       images,
-      videos: videos ? videos.split(',') : [],
+      videos: videos ? videos.split(',').map(url => url.trim()) : [],
       detailedText,
       files,
       subCategory,
@@ -131,7 +128,7 @@ app.put('/cms/:id', upload.fields([{ name: 'images', maxCount: 10 }, { name: 'fi
         title,
         description,
         images,
-        videos: videos ? videos.split(',') : [],
+        videos: videos ? videos.split(',').map(url => url.trim()) : [],
         detailedText,
         files,
         subCategory,
