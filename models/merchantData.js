@@ -26,7 +26,8 @@ const merchantDataSchema = new mongoose.Schema({
   lastName: String,
   password: String,
   numberOfPeople: String,
-  brandLogo: String
+  brandLogo: String,
+  membershipPlan: String
 }, { timestamps: true });
 
 module.exports = mongoose.model('MerchantData', merchantDataSchema);

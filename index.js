@@ -249,6 +249,7 @@ app.post('/addmerchants', upload.fields([
   try {
     const newMerchant = new MerchantData({
       ...req.body,
+      membershipPlan: req.body.membershipPlan, // Add membershipPlan from req.body
       profileImage: req.files.profileImage ? req.files.profileImage[0].path : null,
       brandLogo: req.files.brandLogo ? req.files.brandLogo[0].path : null,
       businessLicense: req.files.businessLicense ? req.files.businessLicense[0].path : null,
