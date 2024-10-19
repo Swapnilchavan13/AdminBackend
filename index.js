@@ -231,12 +231,6 @@ app.delete('/deletecms/:id', async (req, res) => {
 });
 
 
-
-
-
-
-
-
 /////////////////////////////////////////////////////////////
 app.post('/addmerchants', upload.fields([
   { name: 'profileImage', maxCount: 1 },

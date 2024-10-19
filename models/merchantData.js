@@ -6,6 +6,7 @@ const merchantDataSchema = new mongoose.Schema({
   businessAddress: String,
   contactEmail: String,
   contactPhoneNumber: String,
+  contactPhoneNumber2: String,
   websiteUrl: String,
   operationHours: String,
   yearsOfBusiness: String,
