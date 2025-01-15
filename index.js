@@ -73,8 +73,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-
-
 ////////////////////////////////////////////////////////////////////////////////
 
 // Create CMS Data
@@ -192,16 +190,27 @@ app.post('/uploadcms', upload.array('images', 10), async (req, res) => {
   }
 });
 
-// GET request to fetch all CMS data
+// GET request to fetch all CMS data or filter by location
 app.get('/getcms', async (req, res) => {
   try {
-    const cmsData = await CmsData.find();
+    const { location } = req.query; // Extract location query parameter
+    let cmsData;
+
+    if (location) {
+      // If location query is provided, filter by location
+      cmsData = await CmsData.find({ location });
+    } else {
+      // Otherwise, fetch all CMS data
+      cmsData = await CmsData.find();
+    }
+
     res.status(200).json(cmsData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error fetching CMS data' });
   }
 });
+
 
 // Route to handle deleting CMS data
 app.delete('/deletecms/:id', async (req, res) => {
@@ -387,7 +396,6 @@ app.get('/formdata', async (req, res) => {
 });
 
 
-///get by user 
 
 // GET request to count form data by username
 app.get('/formdata/count', async (req, res) => {
@@ -436,45 +444,78 @@ app.put('/update/:id', upload.fields([{ name: 'photo' }, { name: 'photo2' }]), a
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//Add Merchant Details
+app.post('/addmerchant', upload.single('brandImage'), async (req, res) => {
+  const { businessName, ownerName, businessType, contactNumber, email, address, website, gstNumber } = req.body;
+  const brandImage = req.file ? req.file.path : null; // Get the file path from multer
 
+  // Log the form data to the terminal for debugging
+  console.log('Form Data:', {
+    businessName,
+    ownerName,
+    businessType,
+    contactNumber,
+    email,
+    address,
+    website,
+    gstNumber,
+    brandImage,
+  });
 
-
-
-
-
-// POST request to create a new merchant
-app.post('/merchants', async (req, res) => {
   try {
-    const { businessName, businessAddress, contactPerson, contactEmail, contactPhoneNumber, loginPin } = req.body;
-
-    // Create a new merchant
+    // Save the data to the database
     const newMerchant = new Merchant({
       businessName,
-      businessAddress,
-      contactPerson,
-      contactEmail,
-      contactPhoneNumber,
-      loginPin,
+      ownerName,
+      businessType,
+      contactNumber,
+      email,
+      address,
+      website,
+      gstNumber,
+      brandImage, // Save the image path here
     });
 
-    // Save the merchant to the database
-    const savedMerchant = await newMerchant.save();
+    // Save the new merchant
+    await newMerchant.save();
 
-    res.status(201).json(savedMerchant);
-  } catch (error) {
-    res.status(500).json({ message: 'Error creating merchant', error });
+    // Return a success response
+    res.json({
+      message: 'Merchant added successfully',
+      data: newMerchant,
+    });
+  } catch (err) {
+    // Return an error response if something goes wrong
+    res.status(500).json({
+      message: 'Error saving merchant data',
+      error: err,
+    });
   }
 });
 
-// GET request to fetch all merchants
-app.get('/allmerchants', async (req, res) => {
+// GET Route to Fetch All Merchants
+app.get('/merchants', async (req, res) => {
   try {
+    // Fetch all merchant data from the database
     const merchants = await Merchant.find();
-    res.status(200).json(merchants);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching merchants', error });
+
+    // If merchants are found, return them
+    res.status(200).json({
+      message: 'Merchants retrieved successfully',
+      data: merchants,
+    });
+  } catch (err) {
+    // If there's an error, return a 500 status with the error message
+    res.status(500).json({
+      message: 'Error fetching merchants data',
+      error: err,
+    });
   }
 });
+
+
+
+
 
 //CRUD OF Game CMS//
 // Create a new game
