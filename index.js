@@ -1183,7 +1183,7 @@ app.post('/sendOtp', (req, res) => {
   };
 
   const requestBody = JSON.stringify({
-      template_id: "66682876d6fc0550002f4df2",
+      template_id: "6669404cd6fc0565025c2102",  ///66682876d6fc0550002f4df2
       mobile: mobileNumber,
       var1: verificationNum
   });
