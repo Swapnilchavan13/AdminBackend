@@ -1163,106 +1163,199 @@ app.get('/bookingdata', async (req, res) => {
 // Routes for OTP sending and verification
 
 
-// GET /otpStatus
-app.get('/otpp', (req, res) => {
-  res.json({ message: 'OTP is working' });
+// // GET /otpStatus
+// app.get('/otpp', (req, res) => {
+//   res.json({ message: 'OTP is working' });
+// });
+
+
+// // Function to send OTP
+// app.post('/sendOtp', (req, res) => {
+//   const { mobileNumber, verificationNum } = req.body;
+
+//   if (!mobileNumber || !verificationNum) {
+//       return res.status(400).json({ error: "Mobile number and verification number are required." });
+//   }
+
+//   console.log(`Sending OTP to ${mobileNumber} with verification number: ${verificationNum}`);
+
+//   const options = {
+//       method: "POST",
+//       hostname: "control.msg91.com",
+//       path: "/api/v5/otp",
+//       headers: {
+//           "Content-Type": "application/json",
+//           "authkey": '408994AbeVcmRYV66682d3bP1'
+//       }
+//   };
+
+//   const requestBody = JSON.stringify({
+//       template_id: "6669404cd6fc0565025c2102",  ///66682876d6fc0550002f4df2
+//       mobile: mobileNumber,
+//       var1: verificationNum
+//   });
+
+//   const request = https.request(options, (response) => {
+//       const chunks = [];
+
+//       response.on("data", (chunk) => {
+//           chunks.push(chunk);
+//       });
+
+//       response.on("end", () => {
+//           const body = Buffer.concat(chunks).toString();
+//           console.log(`Response from MSG91: ${body}`);
+
+//           if (response.statusCode === 200) {
+//               console.log("OTP sent successfully");
+//               res.status(200).json({ message: "OTP sent successfully" });
+//           } else {
+//               console.error("Failed to send OTP");
+//               res.status(response.statusCode).json({ error: "Failed to send OTP", details: body });
+//           }
+//       });
+//   });
+
+//   request.on("error", (error) => {
+//       console.error(`Request error: ${error.message}`);
+//       res.status(500).json({ error: "Internal server error." });
+//   });
+
+//   request.write(requestBody);
+//   request.end();
+// });
+
+// // Function to verify OTP
+// app.post('/verifyOtp', (req, res) => {
+//   const { otp, mobileNumber } = req.body;
+
+//   if (!otp || !mobileNumber) {
+//       return res.status(400).json({ error: "OTP and mobile number are required." });
+//   }
+
+//   const options = {
+//       method: "GET",
+//       hostname: "control.msg91.com",
+//       path: `/api/v5/otp/verify?otp=${encodeURIComponent(otp)}&mobile=${encodeURIComponent(mobileNumber)}`,
+//       headers: {
+//           "authkey": '408994AbeVcmRYV66682d3bP1'
+//       }
+//   };
+
+//   const request = https.request(options, (response) => {
+//       const chunks = [];
+
+//       response.on("data", (chunk) => {
+//           chunks.push(chunk);
+//       });
+
+//       response.on("end", () => {
+//           const body = Buffer.concat(chunks).toString();
+//           console.log(`Verification response from MSG91: ${body}`);
+//           res.status(response.statusCode).send(body);
+//       });
+//   });
+
+//   request.on("error", (error) => {
+//       console.error(`Request error: ${error.message}`);
+//       res.status(500).json({ error: "Internal server error." });
+//   });
+
+//   request.end();
+// });
+
+
+
+
+// Health check
+app.get('/otpStatus', (req, res) => {
+  res.json({ message: 'OTP service is up.' });
 });
 
-
-// Function to send OTP
+// Send OTP
 app.post('/sendOtp', (req, res) => {
-  const { mobileNumber, verificationNum } = req.body;
-
-  if (!mobileNumber || !verificationNum) {
-      return res.status(400).json({ error: "Mobile number and verification number are required." });
+  const { mobileNumber, templateVar } = req.body;
+  if (!mobileNumber) {
+    return res.status(400).json({ error: "Mobile number is required." });
   }
 
-  console.log(`Sending OTP to ${mobileNumber} with verification number: ${verificationNum}`);
+  const requestBody = JSON.stringify({
+    template_id: "6669404cd6fc0565025c2102",
+    mobile: mobileNumber,
+    // If your template expects a variable, use the correct key:
+    // e.g. "var1": templateVar
+    // remove this line if your template has no variables
+    var1: templateVar  
+  });
 
   const options = {
-      method: "POST",
-      hostname: "control.msg91.com",
-      path: "/api/v5/otp",
-      headers: {
-          "Content-Type": "application/json",
-          "authkey": '408994AbeVcmRYV66682d3bP1'
-      }
+    method: "POST",
+    hostname: "control.msg91.com",
+    path: "/api/v5/otp",
+    headers: {
+      "Content-Type": "application/json",
+      "authkey": "408994AbeVcmRYV66682d3bP1"
+    }
   };
 
-  const requestBody = JSON.stringify({
-      template_id: "6669404cd6fc0565025c2102",  ///66682876d6fc0550002f4df2
-      mobile: mobileNumber,
-      var1: verificationNum
-  });
-
   const request = https.request(options, (response) => {
-      const chunks = [];
-
-      response.on("data", (chunk) => {
-          chunks.push(chunk);
-      });
-
-      response.on("end", () => {
-          const body = Buffer.concat(chunks).toString();
-          console.log(`Response from MSG91: ${body}`);
-
-          if (response.statusCode === 200) {
-              console.log("OTP sent successfully");
-              res.status(200).json({ message: "OTP sent successfully" });
-          } else {
-              console.error("Failed to send OTP");
-              res.status(response.statusCode).json({ error: "Failed to send OTP", details: body });
-          }
-      });
+    const chunks = [];
+    response.on("data", chunk => chunks.push(chunk));
+    response.on("end", () => {
+      const body = Buffer.concat(chunks).toString();
+      if (response.statusCode === 200) {
+        console.log("OTP sent successfully:", body);
+        res.json({ message: "OTP sent successfully", data: JSON.parse(body) });
+      } else {
+        console.error("Failed to send OTP:", body);
+        res.status(response.statusCode).json({ error: "Failed to send OTP", details: body });
+      }
+    });
   });
 
-  request.on("error", (error) => {
-      console.error(`Request error: ${error.message}`);
-      res.status(500).json({ error: "Internal server error." });
+  request.on("error", err => {
+    console.error("Request error:", err);
+    res.status(500).json({ error: "Internal server error." });
   });
 
   request.write(requestBody);
   request.end();
 });
 
-// Function to verify OTP
+// Verify OTP
 app.post('/verifyOtp', (req, res) => {
-  const { otp, mobileNumber } = req.body;
-
-  if (!otp || !mobileNumber) {
-      return res.status(400).json({ error: "OTP and mobile number are required." });
+  const { mobileNumber, otp } = req.body;
+  if (!mobileNumber || !otp) {
+    return res.status(400).json({ error: "Mobile number and OTP are required." });
   }
 
   const options = {
-      method: "GET",
-      hostname: "control.msg91.com",
-      path: `/api/v5/otp/verify?otp=${encodeURIComponent(otp)}&mobile=${encodeURIComponent(mobileNumber)}`,
-      headers: {
-          "authkey": '408994AbeVcmRYV66682d3bP1'
-      }
+    method: "GET",
+    hostname: "control.msg91.com",
+    path: `/api/v5/otp/verify?mobile=${encodeURIComponent(mobileNumber)}&otp=${encodeURIComponent(otp)}`,
+    headers: {
+      "authkey": "408994AbeVcmRYV66682d3bP1"
+    }
   };
 
   const request = https.request(options, (response) => {
-      const chunks = [];
-
-      response.on("data", (chunk) => {
-          chunks.push(chunk);
-      });
-
-      response.on("end", () => {
-          const body = Buffer.concat(chunks).toString();
-          console.log(`Verification response from MSG91: ${body}`);
-          res.status(response.statusCode).send(body);
-      });
+    const chunks = [];
+    response.on("data", chunk => chunks.push(chunk));
+    response.on("end", () => {
+      const body = Buffer.concat(chunks).toString();
+      console.log("Verification response:", body);
+      res.status(response.statusCode).json(JSON.parse(body));
+    });
   });
 
-  request.on("error", (error) => {
-      console.error(`Request error: ${error.message}`);
-      res.status(500).json({ error: "Internal server error." });
+  request.on("error", err => {
+    console.error("Request error:", err);
+    res.status(500).json({ error: "Internal server error." });
   });
 
   request.end();
 });
+
 
 /////////////////////////////////////////////////////////////
   
