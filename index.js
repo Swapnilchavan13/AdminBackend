@@ -1162,6 +1162,13 @@ app.get('/bookingdata', async (req, res) => {
 /////////////////////////////////////////////////////////////
 // Routes for OTP sending and verification
 
+
+// GET /otpStatus
+app.get('/otpp', (req, res) => {
+  res.json({ message: 'OTP is working' });
+});
+
+
 // Function to send OTP
 app.post('/sendOtp', (req, res) => {
   const { mobileNumber, verificationNum } = req.body;
