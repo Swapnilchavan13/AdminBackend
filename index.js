@@ -53,6 +53,40 @@ const connectDB = async () => {
 };
 
 
+// --- Visitor Schema ---
+const visitorSchema = new mongoose.Schema({
+  ip: String,
+  userAgent: String,
+  timestamp: { type: Date, default: Date.now },
+  timeSpent: Number, // in seconds
+});
+const Visitor = mongoose.model("Visitor", visitorSchema);
+
+// --- API Routes ---
+// Log visit
+app.post("/visit", async (req, res) => {
+  try {
+    const { ip, userAgent, timeSpent } = req.body;
+    const visitor = new Visitor({ ip, userAgent, timeSpent });
+    await visitor.save();
+    res.json({ message: "Visit logged" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get stats
+app.get("/visits", async (req, res) => {
+  try {
+    const total = await Visitor.countDocuments();
+    const visits = await Visitor.find().sort({ timestamp: -1 }).limit(20);
+    res.json({ total, visits });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
