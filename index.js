@@ -53,38 +53,6 @@ const connectDB = async () => {
 };
 
 
-// --- Visitor Schema ---
-const visitorSchema = new mongoose.Schema({
-  ip: String,
-  userAgent: String,
-  timestamp: { type: Date, default: Date.now },
-  timeSpent: Number, // in seconds
-});
-const Visitor = mongoose.model("Visitor", visitorSchema);
-
-// --- API Routes ---
-// Log visit
-app.post("/visit", async (req, res) => {
-  try {
-    const { ip, userAgent, timeSpent } = req.body;
-    const visitor = new Visitor({ ip, userAgent, timeSpent });
-    await visitor.save();
-    res.json({ message: "Visit logged" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Get stats
-app.get("/visits", async (req, res) => {
-  try {
-    const total = await Visitor.countDocuments();
-    const visits = await Visitor.find().sort({ timestamp: -1 }).limit(20);
-    res.json({ total, visits });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
 
 
@@ -134,6 +102,73 @@ app.post('/addcmsdata', upload.fields([{ name: 'images', maxCount: 10 }, { name:
     res.status(500).json({ message: 'Error adding CMS data' });
   }
 });
+
+
+
+// --- Visitor Schema & Model (inline) ---
+const visitorSchema = new mongoose.Schema({
+  userId: { type: String, unique: true }, // unique identifier for each user
+  userAgent: String,
+  ip: String,
+  visits: [
+    {
+      timestamp: { type: Date, default: Date.now },
+      timeSpent: Number, // time in seconds
+    },
+  ],
+});
+
+const Visitor = mongoose.model("Visitor", visitorSchema);
+
+// --- API Routes ---
+// Record visit (new or repeated)
+app.post("/visit", async (req, res) => {
+  try {
+    const { userId, userAgent, ip, timeSpent } = req.body;
+
+    let visitor = await Visitor.findOne({ userId });
+
+    if (!visitor) {
+      // New user
+      visitor = new Visitor({
+        userId,
+        userAgent,
+        ip,
+        visits: [{ timeSpent }],
+      });
+    } else {
+      // Existing user → add new visit
+      visitor.visits.push({ timeSpent });
+    }
+
+    await visitor.save();
+    res.json({ message: "Visit recorded", visitor });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Fetch stats
+app.get("/visits", async (req, res) => {
+  try {
+    const totalUsers = await Visitor.countDocuments();
+    const totalVisits = await Visitor.aggregate([
+      { $unwind: "$visits" },
+      { $count: "count" },
+    ]);
+
+    const visits = await Visitor.find().sort({ "visits.timestamp": -1 });
+
+    res.json({
+      totalUsers,
+      totalVisits: totalVisits[0]?.count || 0,
+      visits,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // Get all CMS Data
 app.get('/getcmsdata', async (req, res) => {
