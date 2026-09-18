@@ -610,12 +610,12 @@ app.post('/games', upload.fields([
     } = req.body;
 
     const images = [
-      req.files['image0'] ? `http://localhost:3005/uploads/${req.files['image0'][0].filename}` : '',
-      req.files['image1'] ? `http://localhost:3005/uploads/${req.files['image1'][0].filename}` : '',
-      req.files['image2'] ? `http://localhost:3005/uploads/${req.files['image2'][0].filename}` : '',
+      req.files['image0'] ? `http://localhost:3006/uploads/${req.files['image0'][0].filename}` : '',
+      req.files['image1'] ? `http://localhost:3006/uploads/${req.files['image1'][0].filename}` : '',
+      req.files['image2'] ? `http://localhost:3006/uploads/${req.files['image2'][0].filename}` : '',
     ];
 
-    const logo = req.files['logo'] ? `http://localhost:3005/uploads/${req.files['logo'][0].filename}` : '';
+    const logo = req.files['logo'] ? `http://localhost:3006/uploads/${req.files['logo'][0].filename}` : '';
 
     const game = new Game({
       title,
@@ -688,12 +688,12 @@ app.put('/games/:id', upload.fields([
     } = req.body;
 
     const images = [
-      req.files['image0'] ? `http://localhost:3005/uploads/${req.files['image0'][0].filename}` : '',
-      req.files['image1'] ? `http://localhost:3005/uploads/${req.files['image1'][0].filename}` : '',
-      req.files['image2'] ? `http://localhost:3005/uploads/${req.files['image2'][0].filename}` : '',
+      req.files['image0'] ? `http://localhost:3006/uploads/${req.files['image0'][0].filename}` : '',
+      req.files['image1'] ? `http://localhost:3006/uploads/${req.files['image1'][0].filename}` : '',
+      req.files['image2'] ? `http://localhost:3006/uploads/${req.files['image2'][0].filename}` : '',
     ];
 
-    const logo = req.files['logo'] ? `http://localhost:3005/uploads/${req.files['logo'][0].filename}` : '';
+    const logo = req.files['logo'] ? `http://localhost:3006/uploads/${req.files['logo'][0].filename}` : '';
 
     const game = await Game.findByIdAndUpdate(req.params.id, {
       title,
@@ -753,8 +753,8 @@ app.delete('/games/:id', async (req, res) => {
 //       numberOfSeats,
 //       pricePerSeat,
 //     } = req.body;
-//     // const images = req.files['images']?.map((file) => `http://62.72.59.146:3005/uploads/${file.filename}`) || [];
-//     const video = req.files['video']?.[0]?.path ? `http://62.72.59.146:3005/uploads/${req.files['video'][0].filename}` : null;
+//     // const images = req.files['images']?.map((file) => `http://62.72.59.146:3006/uploads/${file.filename}`) || [];
+//     const video = req.files['video']?.[0]?.path ? `http://62.72.59.146:3006/uploads/${req.files['video'][0].filename}` : null;
 
 //     const evn = new Evn({ eventName,
 //       eventDescription,
