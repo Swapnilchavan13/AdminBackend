@@ -4,7 +4,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
-const port = 3005;
+const port = 3006;
 const multer = require('multer');
 const fs = require('fs');
 
