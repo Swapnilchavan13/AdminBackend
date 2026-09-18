@@ -171,7 +171,7 @@ app.get("/visits", async (req, res) => {
 
 
 // Get all CMS Data
-app.get('/getcmsdata', async (req, res) => {
+app.get('/api/getcmsdata', async (req, res) => {
   try {
     const cmsData = await CmsSchema.find();
     res.status(200).json(cmsData);
